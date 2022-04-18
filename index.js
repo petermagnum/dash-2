@@ -21,8 +21,8 @@ const io = SocketIO(server);
 io.on("connection", (socket) => {
   //el primer evento a escuchar es cuando se conecta un nuevo cliente
   console.log("Socket conection Exitosa", socket.id);
- // registo=true;
- // queryBD();
+  inicio() 
+
 
 
 });
@@ -54,6 +54,20 @@ conexion.connect(function (error) {
 
 
 // consultas
+function inicio() {  
+ 
+    conexion.query(
+      "SELECT * FROM "+tabla+" ORDER by ID DESC LIMIT 1",
+      function (error, results, fields) {
+        if (error) throw error;
+        results.forEach((result) => {
+          //console.log(result);
+          io.sockets.emit("server:message", result);
+        });
+      }
+    );
+  
+}
 function ContarXFecha(){
   conexion.query(
     "select count(*) from "+tabla+ " where Fecha = '2022-04-15'",

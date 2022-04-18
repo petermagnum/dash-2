@@ -1,5 +1,6 @@
 const socket = io();
 
+
 let output = document.getElementById('output');
 
 
