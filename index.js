@@ -9,9 +9,8 @@ app.set("port", process.env.PORT || 3000);
 //static files
 app.use(express.static(path.join(__dirname, "public")));
 
-app.get("/", (req, res) => {
+app.get("/hola", (req, res) => {
   res.send("hola mundo");
-  
 });
 //start server
 const server = app.listen(app.get("port"), () => {
@@ -26,22 +25,27 @@ io.on("connection", (socket) => {
   //el primer evento a escuchar es cuando se conecta un nuevo cliente
   console.log("Socket conection Exitosa", socket.id);
 
-  //inicio() ;
+  //queryBD();
 });
 
 //BD
 var mysql = require("mysql");
-var tabla = "cerradoras";
-let numeroRegistrosDB = 0;
-let registro = false;
-let Fecha = Date.now();
+var tabla = "cerradoras"; //"tb_Registro_Proc_10002824";
+
 
 var conexion = mysql.createConnection({
   //tb_Registro_Proc_10002824
+
   host: "localhost",
   database: "rosen",
   user: "root",
   password: "",
+  /*
+  host: "172.16.44.150",
+  database: "db_MODBUS",
+  user: "ctrujillo",
+  password: "d2021ct",
+  */
 });
 
 conexion.connect(function (error) {
@@ -52,47 +56,101 @@ conexion.connect(function (error) {
   }
 });
 
+//Variables Globales
+var uCerradas = [];
+let numeroRegistrosDB = 0;
+let nuevoRegistro = false;
+
 // consultas
-function inicio() {
+
+function EscucharBD() {
   conexion.query(
-    "SELECT * FROM " + tabla + " ORDER by ID DESC LIMIT 1",
+    "select count(*) as registros from " + tabla ,//+ " where v1 = 0",
     function (error, results, fields) {
       if (error) throw error;
       results.forEach((result) => {
-        //console.log(result);
-        io.sockets.emit("server:message", result);
+        var nRegistrosActual = result.registros;
+
+        if (nRegistrosActual > numeroRegistrosDB) {
+          numeroRegistrosDB = nRegistrosActual;
+          nuevoRegistro = true;
+          console.log("n° registros BD = " + numeroRegistrosDB);
+        } else {
+          nuevoRegistro = false;
+        }
       });
     }
   );
 }
-function ContarXFecha() {
+
+function unDiarias(fecha) {
+  if (nuevoRegistro) {
+    Contar("09:00:00", "10:00:00", fecha);
+    Contar("10:00:00", "11:00:00", fecha);
+    Contar("11:00:00", "12:00:00", fecha);
+    Contar("12:00:00", "13:00:00", fecha);
+    Contar("13:00:00", "14:00:00", fecha);
+    Contar("14:00:00", "15:00:00", fecha);
+    Contar("15:00:00", "16:00:00", fecha);
+    Contar("16:00:00", "17:00:00", fecha);
+    Contar("17:00:00", "18:00:00", fecha);
+
+    
+    //io.sockets.emit("Cerradas", uCerradas);
+    while (uCerradas.length > 0) {
+      uCerradas.pop();
+    }
+  }
+}
+function Contar(hi, hf, fecha) {
   conexion.query(
     "select count(*) as registros from " +
       tabla +
-      " where Fecha = '2022-04-15' and v1= 0 ",
+      " where Fecha = '" +
+      fecha +
+      "' and v1= 0 and Hora>= '" +
+      hi +
+      "' and Hora < '" +
+      hf +
+      "'",
     function (error, results, fields) {
       if (error) throw error;
-      results.forEach((result) => {
-        //var nRegistrosActual = parseInt( JSON.stringify(result).split(":")[1].split("}")[0] );
 
-        var nRegistrosActual = result.registros;
-        if (numeroRegistrosDB == 0) {
-          io.sockets.emit("server:total", nRegistrosActual);
-        }
+      nCerrados = results[0].registros;
+      
 
-        if (nRegistrosActual > numeroRegistrosDB) {
-          io.sockets.emit("server:total", nRegistrosActual);
-          numeroRegistrosDB = nRegistrosActual;
-          registro = true;
-          console.log("n° registros acutales " + numeroRegistrosDB);
-        } else {
-          registro = false;
-        }
-      });
+      console.log(
+        "n° cerrados en " +
+          fecha +
+          " entre [" +
+          hi +
+          ", " +
+          hf +
+          "] = " +
+          nCerrados
+      );
+      uCerradas.push(nCerrados);
+      console.log(uCerradas);
+      if(uCerradas.length==9){
+        io.sockets.emit("Cerradas", uCerradas);
+      }
+      
     }
   );
 }
 
+function inicio() {
+  conexion.query(
+    "SELECT * FROM " + tabla + " ORDER by ID DESC LIMIT 4",
+    function (error, results, fields) {
+      if (error) throw error;
+      results.forEach((result) => {
+        console.log(result);
+        // io.sockets.emit("server:message", result);
+      });
+    }
+  );
+}
 function select() {
   //ORDER by ID DESC LIMIT 1
   // io.sockets.emit("server:select", results);
@@ -110,17 +168,13 @@ function select() {
 }
 
 function queryBD() {
-  ContarXFecha();
-  select();
+  EscucharBD();
+  //Contar("09:00:00", "10:00:00", "2022-04-15");
+  unDiarias("2022-04-15");
 }
 
 function repetirCadaXSegundos() {
-  let identificadorIntervaloDeTiempo = setInterval(ContarXFecha, 1000);
+  let identificadorIntervaloDeTiempo = setInterval(queryBD, 1000);
 }
+
 repetirCadaXSegundos();
-
-
-
-/*
-
-*/
