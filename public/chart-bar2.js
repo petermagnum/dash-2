@@ -107,13 +107,26 @@ let config2 = {
 };
 
 // render init block
-var myChart = new Chart(document.getElementById("myChart"), config);
+var myChart;
 
 function renderChart() {
   myChart.destroy();
   myChart = new Chart(document.getElementById("myChart"), config2);
 }
 
+socket.on("start", function (data) {
+  
+  oldData[0] = data[0];
+  oldData[1] = data[1];
+  oldData[2] = data[2];
+  oldData[3] = data[3];
+  oldData[4] = data[4];
+  oldData[5] = data[5];
+  oldData[6] = data[6];
+  oldData[7] = data[7];
+  oldData[8] = data[8];
+  myChart = new Chart(document.getElementById("myChart"), config);
+});
 
 socket.on("Cerradas", function (data) {
 

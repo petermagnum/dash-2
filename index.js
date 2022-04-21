@@ -24,8 +24,10 @@ const io = SocketIO(server);
 io.on("connection", (socket) => {
   //el primer evento a escuchar es cuando se conecta un nuevo cliente
   console.log("Socket conection Exitosa", socket.id);
-
-  //queryBD();
+  data=[1,3,1,3,1,3,1,3,1]
+  queryBD();
+  io.sockets.emit('start',uCerradas);
+  
 });
 
 //BD
