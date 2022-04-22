@@ -4,6 +4,10 @@ body{
 
 h1{
     text-align: center;
+    padding: 14px 0;
+}
+h2{
+    text-align: center;
 }
 #container{
     max-width: 600px;

@@ -24,20 +24,20 @@ const io = SocketIO(server);
 io.on("connection", (socket) => {
   //el primer evento a escuchar es cuando se conecta un nuevo cliente
   console.log("Socket conection Exitosa", socket.id);
-  data=[1,3,1,3,1,3,1,3,1]
   queryBD();
   io.sockets.emit('start',uCerradas);
   
 });
 
+
 //BD
 var mysql = require("mysql");
-var tabla = "cerradoras"; //"tb_Registro_Proc_10002824";
+var tabla ="cerradoras"//"tb_Registro_Proc_10002824";
 
 
 var conexion = mysql.createConnection({
   //tb_Registro_Proc_10002824
-
+ 
   host: "localhost",
   database: "rosen",
   user: "root",
@@ -62,12 +62,13 @@ conexion.connect(function (error) {
 var uCerradas = [];
 let numeroRegistrosDB = 0;
 let nuevoRegistro = false;
+let Fecha='2022-04-15'
 
 // consultas
 
 function EscucharBD() {
   conexion.query(
-    "select count(*) as registros from " + tabla ,//+ " where v1 = 0",
+    "select count(*) as registros from " + tabla + " where v1 = 0",
     function (error, results, fields) {
       if (error) throw error;
       results.forEach((result) => {
@@ -83,26 +84,6 @@ function EscucharBD() {
       });
     }
   );
-}
-
-function unDiarias(fecha) {
-  if (nuevoRegistro) {
-    Contar("09:00:00", "10:00:00", fecha);
-    Contar("10:00:00", "11:00:00", fecha);
-    Contar("11:00:00", "12:00:00", fecha);
-    Contar("12:00:00", "13:00:00", fecha);
-    Contar("13:00:00", "14:00:00", fecha);
-    Contar("14:00:00", "15:00:00", fecha);
-    Contar("15:00:00", "16:00:00", fecha);
-    Contar("16:00:00", "17:00:00", fecha);
-    Contar("17:00:00", "18:00:00", fecha);
-
-    
-    //io.sockets.emit("Cerradas", uCerradas);
-    while (uCerradas.length > 0) {
-      uCerradas.pop();
-    }
-  }
 }
 function Contar(hi, hf, fecha) {
   conexion.query(
@@ -132,7 +113,7 @@ function Contar(hi, hf, fecha) {
           nCerrados
       );
       uCerradas.push(nCerrados);
-      console.log(uCerradas);
+     // console.log(uCerradas);
       if(uCerradas.length==9){
         io.sockets.emit("Cerradas", uCerradas);
       }
@@ -140,6 +121,26 @@ function Contar(hi, hf, fecha) {
     }
   );
 }
+function unDiarias(fecha) {
+  if (nuevoRegistro) {
+    Contar("09:00:00", "10:00:00", fecha);
+    Contar("10:00:00", "11:00:00", fecha);
+    Contar("11:00:00", "12:00:00", fecha);
+    Contar("12:00:00", "13:00:00", fecha);
+    Contar("13:00:00", "14:00:00", fecha);
+    Contar("14:00:00", "15:00:00", fecha);
+    Contar("15:00:00", "16:00:00", fecha);
+    Contar("16:00:00", "17:00:00", fecha);
+    Contar("17:00:00", "18:00:00", fecha);
+
+    
+    //io.sockets.emit("Cerradas", uCerradas);
+    while (uCerradas.length > 0) {
+      uCerradas.pop();
+    }
+  }
+}
+
 
 function inicio() {
   conexion.query(
@@ -153,17 +154,15 @@ function inicio() {
     }
   );
 }
-function select() {
-  //ORDER by ID DESC LIMIT 1
-  // io.sockets.emit("server:select", results);
-  if (registro) {
+function select(fecha) {
+
+  if (nuevoRegistro) {
     conexion.query(
-      "SELECT * FROM " + tabla + " where Fecha = '2022-04-15'  ",
+      "SELECT * FROM " + tabla + " where Fecha = '"+ fecha+"'",
       function (error, results, fields) {
         if (error) throw error;
-
-        //var registros = JSON.parse(results);
         io.sockets.emit("select", results);
+       
       }
     );
   }
@@ -171,8 +170,8 @@ function select() {
 
 function queryBD() {
   EscucharBD();
-  //Contar("09:00:00", "10:00:00", "2022-04-15");
-  unDiarias("2022-04-15");
+  select(Fecha);
+  unDiarias(Fecha);
 }
 
 function repetirCadaXSegundos() {

@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
@@ -8,28 +9,48 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/3.7.1/chart.min.js"></script>
     <title>Document</title>
 </head>
+
 <body>
-    
+
     <div id="container">
         <div id="window">
             <h1>Dashboard roSen</h1>
+            <h2>Produccion x hrs</h2>
             <div id="output">
-                <canvas id="myChart" width="400" height="400">                
-                </canvas>
-           
+                <canvas id="myChart" width="400" height="400">
+                </canvas>   
+               
+                     
             </div>
+            
         </div>
+        
     </div>
 
     <script src="/socket.io/socket.io.js"></script>
-    <!--
-        <script src="app.js"></script>
-        <script src="chart-pie.js"></script>
+    
+    <!-- 
+    <script src="app.js"></script>
+    <script src="chart-pie.js"></script>
+   
+               <div id="window">
+            <h2>Tiempos de Produccion</h2>
+            <div id="output">
+                <canvas id="ChartPie" width="400" height="400">
+                </canvas> 
+      
+            </div>
+            
+        </div>
+        
     -->
+   
     <script src="chart-bar2.js"></script>
     
-   
-  
+    
+
+
+
 </body>
 
 </html>

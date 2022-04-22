@@ -1,20 +1,20 @@
 const socket = io();
 
-var oldData = [1,2,3,4,5,6,7,8,9];
+var oldData = [];
 var newData = [];
 
 // setup
 let data = {
   labels: [
-    "9:00",
-    "10:00",
-    "11:00",
-    "12:00",
-    "13:00",
-    "14:00",
-    "15:00",
-    "16:00",
-    "17:00",
+    "[9-10]",
+    "[10-11]",
+    "[11-12]",
+    "[12-13]",
+    "[13-14]",
+    "[14-15]",
+    "[15-16]",
+    "[16-17]",
+    "[17-18]",
   ],
   datasets: [
     {
@@ -81,6 +81,45 @@ let data2 = {
     },
   ],
 };
+let data3 = {
+  labels: [ 
+    "[9-10]",
+    "[10-11]",
+    "[11-12]",
+    "[12-13]",
+    "[13-14]",
+    "[14-15]",
+    "[15-16]",
+    "[16-17]",
+    "[17-18]",
+    
+  ],
+  datasets: [
+    {
+      label: "Unidades Cerradas",
+      data: oldData,
+      backgroundColor: [
+        "rgba(255, 26, 104, 0.2)",
+        "rgba(54, 162, 235, 0.2)",
+        "rgba(255, 206, 86, 0.2)",
+        "rgba(75, 192, 192, 0.2)",
+        "rgba(153, 102, 255, 0.2)",
+        "rgba(255, 159, 64, 0.2)",
+        "rgba(0, 0, 0, 0.2)",
+      ],
+      borderColor: [
+        "rgba(255, 26, 104, 1)",
+        "rgba(54, 162, 235, 1)",
+        "rgba(255, 206, 86, 1)",
+        "rgba(75, 192, 192, 1)",
+        "rgba(153, 102, 255, 1)",
+        "rgba(255, 159, 64, 1)",
+        "rgba(0, 0, 0, 1)",
+      ],
+      borderWidth: 1,
+    },
+  ],
+};
 
 // config Javascript ES6.
 let config = {
@@ -105,10 +144,25 @@ let config2 = {
     },
   },
 };
+let config3 = {
+  type: "bar",
+  data: data3,
+  options: {
+    scales: {
+      y: {
+        beginAtZero: true,
+      },
+    },
+  },
+};
 
 // render init block
-var myChart;
+var myChart=new Chart(document.getElementById("myChart"), config);
 
+function renderChartX() {
+  myChart.destroy();
+  myChart = new Chart(document.getElementById("myChart"), config3);
+}
 function renderChart() {
   myChart.destroy();
   myChart = new Chart(document.getElementById("myChart"), config2);
@@ -125,7 +179,8 @@ socket.on("start", function (data) {
   oldData[6] = data[6];
   oldData[7] = data[7];
   oldData[8] = data[8];
-  myChart = new Chart(document.getElementById("myChart"), config);
+
+  renderChartX();
 });
 
 socket.on("Cerradas", function (data) {
