@@ -1,3 +1,12 @@
+//fecha actual
+let date = new Date();
+let Fecha =
+  date.getFullYear() +
+  "-" +
+  String(date.getMonth() + 1).padStart(2, "0") +
+  "-" +
+  String(date.getDate()).padStart(2, "0");
+
 //ARCHIVO DEL SERVIDOR
 const path = require("path"); // modulo para trabajar con las rutas y unir directorios
 const express = require("express"); // srevidor llamado express
@@ -22,32 +31,36 @@ const SocketIO = require("socket.io");
 const io = SocketIO(server);
 
 io.on("connection", (socket) => {
+  socket.on("fechaSelec", (data) => {
+    Fecha = data;
+    console.log(Fecha);
+    nuevoRegistro = true;
+    //unDiarias(Fecha);
+    //io.sockets.emit("start", uCerradas);
+  });
+
   //el primer evento a escuchar es cuando se conecta un nuevo cliente
   console.log("Socket conection Exitosa", socket.id);
   queryBD();
-  io.sockets.emit('start',uCerradas);
-  
+  io.sockets.emit("start", uCerradas);
 });
-
 
 //BD
 var mysql = require("mysql");
-var tabla ="cerradoras"//"tb_Registro_Proc_10002824";
-
+var tabla = "tb_Registro_Proc_10002824";
 
 var conexion = mysql.createConnection({
   //tb_Registro_Proc_10002824
- 
+  /*
   host: "localhost",
   database: "rosen",
   user: "root",
   password: "",
-  /*
+  */
   host: "172.16.44.150",
   database: "db_MODBUS",
   user: "ctrujillo",
   password: "d2021ct",
-  */
 });
 
 conexion.connect(function (error) {
@@ -62,7 +75,7 @@ conexion.connect(function (error) {
 var uCerradas = [];
 let numeroRegistrosDB = 0;
 let nuevoRegistro = false;
-let Fecha='2022-04-15'
+//let Fecha='2022-04-15'
 
 // consultas
 
@@ -100,7 +113,6 @@ function Contar(hi, hf, fecha) {
       if (error) throw error;
 
       nCerrados = results[0].registros;
-      
 
       console.log(
         "n° cerrados en " +
@@ -113,11 +125,10 @@ function Contar(hi, hf, fecha) {
           nCerrados
       );
       uCerradas.push(nCerrados);
-     // console.log(uCerradas);
-      if(uCerradas.length==9){
+      // console.log(uCerradas);
+      if (uCerradas.length == 9) {
         io.sockets.emit("Cerradas", uCerradas);
       }
-      
     }
   );
 }
@@ -133,14 +144,12 @@ function unDiarias(fecha) {
     Contar("16:00:00", "17:00:00", fecha);
     Contar("17:00:00", "18:00:00", fecha);
 
-    
     //io.sockets.emit("Cerradas", uCerradas);
     while (uCerradas.length > 0) {
       uCerradas.pop();
     }
   }
 }
-
 
 function inicio() {
   conexion.query(
@@ -155,14 +164,12 @@ function inicio() {
   );
 }
 function select(fecha) {
-
   if (nuevoRegistro) {
     conexion.query(
-      "SELECT * FROM " + tabla + " where Fecha = '"+ fecha+"'",
+      "SELECT * FROM " + tabla + " where Fecha = '" + fecha + "'",
       function (error, results, fields) {
         if (error) throw error;
         io.sockets.emit("select", results);
-       
       }
     );
   }

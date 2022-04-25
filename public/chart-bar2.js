@@ -1,5 +1,18 @@
 const socket = io();
 
+var fecha = document.getElementById("fecha");
+
+fecha.addEventListener("change", function () {
+  Fecha= this.value;
+  socket.emit("fechaSelec",Fecha);
+  console.log(Fecha);
+
+});
+
+window.addEventListener("load", function () { // captiramos el ingreso a la ventana
+  console.log("inicio ventana");
+});
+
 var oldData = [];
 var newData = [];
 
@@ -43,7 +56,7 @@ let data = {
   ],
 };
 let data2 = {
-  labels: [ 
+  labels: [
     "[9-10]",
     "[10-11]",
     "[11-12]",
@@ -53,7 +66,6 @@ let data2 = {
     "[15-16]",
     "[16-17]",
     "[17-18]",
-    
   ],
   datasets: [
     {
@@ -82,7 +94,7 @@ let data2 = {
   ],
 };
 let data3 = {
-  labels: [ 
+  labels: [
     "[9-10]",
     "[10-11]",
     "[11-12]",
@@ -92,7 +104,6 @@ let data3 = {
     "[15-16]",
     "[16-17]",
     "[17-18]",
-    
   ],
   datasets: [
     {
@@ -157,7 +168,7 @@ let config3 = {
 };
 
 // render init block
-var myChart=new Chart(document.getElementById("myChart"), config);
+var myChart = new Chart(document.getElementById("myChart"), config);
 
 function renderChartX() {
   myChart.destroy();
@@ -169,7 +180,6 @@ function renderChart() {
 }
 
 socket.on("start", function (data) {
-  
   oldData[0] = data[0];
   oldData[1] = data[1];
   oldData[2] = data[2];
@@ -184,9 +194,8 @@ socket.on("start", function (data) {
 });
 
 socket.on("Cerradas", function (data) {
-
   //newData = data;
- 
+
   newData[0] = data[0];
   newData[1] = data[1];
   newData[2] = data[2];
@@ -198,8 +207,4 @@ socket.on("Cerradas", function (data) {
   newData[8] = data[8];
   console.log(newData);
   renderChart();
-  
-  
 });
-
-
