@@ -1,0 +1,99 @@
+body {
+    background-color: lightblue;
+}
+
+#main {
+    display: flex;
+    width: 100%;
+    height: 100vh;
+    background-color:  #111B21/*#1E1E1E*/
+
+}
+
+#container-left {
+    display: flex;
+    flex-wrap: wrap;
+    width: 50%;
+    height: 70%;
+    
+
+}
+
+#left-item {
+    display: flex;
+    gap: 10px;
+    align-items: center;
+    justify-content: center;
+    width: 50%;
+    height: 35%;
+}
+
+#container-right {
+    display: flex;
+    flex-direction: column;
+    width: 50%;
+    height: 35%;
+}
+
+
+#right-top {
+    display: flex;
+    width: 98%;
+    height: 50%;
+
+}
+
+#right-bottom {
+    display: flex;
+    width: 98%;
+    height: 50%;
+}
+
+#total {
+    font-size: 30px;
+  
+}
+
+#tot {
+    font-size: 85px;
+    color: rgb(255, 255, 255);
+    text-shadow:
+    0 0 2px rgb(223, 243, 237),
+    0 0 2px rgb(204, 255, 235),
+    0 0 2px rgb(204, 255, 235),
+    0 0 10px rgb(0, 255, 153),
+    0 0 2px rgb(204, 255, 235),
+    0 0 2px rgb(223, 243, 237)
+    
+    ;
+
+
+ 
+}
+#total{
+    color: #DFF3ED;
+}
+
+
+#timeline {
+    width: 100%;
+    height: 100%;
+    margin: 0 auto;
+    display: block;
+  
+}
+
+#ChartPie{
+    width: 80%;
+    height: 80%;
+    margin: 0 auto;
+    display: block;
+}
+
+#ChartDonut{
+    width: 80%;
+    height: 80%;
+    margin: 0 auto;
+    display: block;
+}
+

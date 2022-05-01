@@ -47,20 +47,21 @@ io.on("connection", (socket) => {
 
 //BD
 var mysql = require("mysql");
-var tabla = "tb_Registro_Proc_10002824";
+var tabla ="cerradoras" ;// "tb_Registro_Proc_10002824";"cerradoras" ;
 
 var conexion = mysql.createConnection({
   //tb_Registro_Proc_10002824
-  /*
+
   host: "localhost",
   database: "rosen",
   user: "root",
   password: "",
-  */
+    /*
   host: "172.16.44.150",
   database: "db_MODBUS",
   user: "ctrujillo",
   password: "d2021ct",
+ */
 });
 
 conexion.connect(function (error) {
@@ -166,7 +167,8 @@ function inicio() {
 function select(fecha) {
   if (nuevoRegistro) {
     conexion.query(
-      "SELECT * FROM " + tabla + " where Fecha = '" + fecha + "'",
+      "SELECT * FROM " + tabla + " where Fecha = '" + fecha + "' and Hora>= '08:30:00' and Hora<= '18:00:00'",
+
       function (error, results, fields) {
         if (error) throw error;
         io.sockets.emit("select", results);
