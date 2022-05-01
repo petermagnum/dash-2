@@ -1,11 +1,14 @@
 //fecha actual
 let date = new Date();
+/*
 let Fecha =
   date.getFullYear() +
   "-" +
   String(date.getMonth() + 1).padStart(2, "0") +
   "-" +
   String(date.getDate()).padStart(2, "0");
+*/
+let Fecha ='2022-04-15'
 
 //ARCHIVO DEL SERVIDOR
 const path = require("path"); // modulo para trabajar con las rutas y unir directorios
@@ -43,6 +46,7 @@ io.on("connection", (socket) => {
   console.log("Socket conection Exitosa", socket.id);
   queryBD();
   io.sockets.emit("start", uCerradas);
+ 
 });
 
 //BD
@@ -171,6 +175,7 @@ function select(fecha) {
 
       function (error, results, fields) {
         if (error) throw error;
+
         io.sockets.emit("select", results);
       }
     );

@@ -1,21 +1,16 @@
 const socket = io();
 
-
-
-let total = document.getElementById('total');
-
+let total = document.getElementById("total");
 
 var fecha = document.getElementById("fecha");
 fecha.addEventListener("change", function () {
-  Fecha= this.value;
-  socket.emit("fechaSelec",Fecha);
+  Fecha = this.value;
+  socket.emit("fechaSelec", Fecha);
   console.log(Fecha);
 });
-window.addEventListener("load", function () { // captiramos el ingreso a la ventana
-  
-
+window.addEventListener("load", function () {
+  // captiramos el ingreso a la ventana
 });
-
 
 var oldData = [];
 var newData = [];
@@ -24,9 +19,9 @@ var newData = [];
 //########################################################################################################################################
 
 // setup
-let colorBarras="rgb(0, 168, 132)";
-let colorBorde ="rgb(223, 243, 237)";
-let axes="#DFF3ED";
+let colorBarras = "rgb(0, 168, 132)";
+let colorBorde = "rgb(223, 243, 237)";
+let axes = "#DFF3ED";
 
 let data = {
   labels: [
@@ -44,12 +39,8 @@ let data = {
     {
       label: "Unidades Cerradas",
       data: oldData,
-      backgroundColor: [
-        colorBarras
-      ],
-      borderColor: [
-        colorBorde
-      ],
+      backgroundColor: [colorBarras],
+      borderColor: [colorBorde],
       borderWidth: 3,
     },
   ],
@@ -70,12 +61,8 @@ let data2 = {
     {
       label: "Unidades Cerradas",
       data: newData,
-      backgroundColor: [
-        colorBarras
-      ],
-      borderColor: [
-        colorBorde,
-      ],
+      backgroundColor: [colorBarras],
+      borderColor: [colorBorde],
       borderWidth: 3,
     },
   ],
@@ -96,14 +83,9 @@ let data3 = {
     {
       label: "Unidades Cerradas",
       data: oldData,
-      backgroundColor: [
-        colorBarras
-      ],
-      borderColor: [
-        colorBorde,
-        
-      ],
-      
+      backgroundColor: [colorBarras],
+      borderColor: [colorBorde],
+
       borderWidth: 3,
     },
   ],
@@ -116,21 +98,21 @@ let config = {
   options: {
     legend: {
       labels: {
-          // This more specific font property overrides the global property
-          fontColor: 'white'
-      }
-  },
-    
+        // This more specific font property overrides the global property
+        fontColor: "white",
+      },
+    },
+
     scales: {
       x: {
-        ticks:{
-          color:axes
+        ticks: {
+          color: axes,
         },
         beginAtZero: true,
       },
       y: {
-        ticks:{
-          color:axes
+        ticks: {
+          color: axes,
         },
         beginAtZero: true,
       },
@@ -138,24 +120,23 @@ let config = {
   },
 };
 let config2 = {
- 
   type: "bar",
   data: data2,
   options: {
     legend: {
-          fontColor: 'white'
-      },
- 
+      fontColor: "white",
+    },
+
     scales: {
       x: {
-        ticks:{
-          color:axes
+        ticks: {
+          color: axes,
         },
         beginAtZero: true,
       },
       y: {
-        ticks:{
-          color:axes
+        ticks: {
+          color: axes,
         },
         beginAtZero: true,
       },
@@ -167,23 +148,22 @@ let config3 = {
   data: data3,
   options: {
     legend: {
-      fontColor: 'white'
-  },
+      fontColor: "white",
+    },
 
     scales: {
       x: {
-        ticks:{
-          color:axes
+        ticks: {
+          color: axes,
         },
         beginAtZero: true,
       },
       y: {
-        ticks:{
-          color:axes
+        ticks: {
+          color: axes,
         },
         beginAtZero: true,
       },
-      
     },
   },
 };
@@ -191,13 +171,17 @@ let config3 = {
 // render init block
 var myChart = new Chart(document.getElementById("myChart"), config);
 
+
+
 function renderChartX() {
   myChart.destroy();
   myChart = new Chart(document.getElementById("myChart"), config3);
+ 
 }
 function renderChart() {
   myChart.destroy();
   myChart = new Chart(document.getElementById("myChart"), config2);
+
 }
 
 socket.on("start", function (data) {
@@ -210,12 +194,19 @@ socket.on("start", function (data) {
   oldData[6] = data[6];
   oldData[7] = data[7];
   oldData[8] = data[8];
-  
 
   renderChartX();
-  let sumaTotal=data[0]+data[1]+data[2]+data[3]+data[4]+data[5]+data[6]+data[7]+data[8];
-  total.innerHTML=`<h1 id="tot" > ${sumaTotal}</h1> uds/dia `
-
+  let sumaTotal =
+    data[0] +
+    data[1] +
+    data[2] +
+    data[3] +
+    data[4] +
+    data[5] +
+    data[6] +
+    data[7] +
+    data[8];
+  total.innerHTML = `<h1 id="tot" > ${sumaTotal}</h1> uds/dia `;
 });
 
 socket.on("Cerradas", function (data) {
@@ -232,19 +223,25 @@ socket.on("Cerradas", function (data) {
   newData[8] = data[8];
   console.log(newData);
   renderChart();
-  let sumaTotal=data[0]+data[1]+data[2]+data[3]+data[4]+data[5]+data[6]+data[7]+data[8];
-  total.innerHTML=`<h1 id="tot"> ${sumaTotal}</h1> uds/dia `
-
+  let sumaTotal =
+    data[0] +
+    data[1] +
+    data[2] +
+    data[3] +
+    data[4] +
+    data[5] +
+    data[6] +
+    data[7] +
+    data[8];
+  total.innerHTML = `<h1 id="tot"> ${sumaTotal}</h1> uds/dia `;
 });
-
 
 //>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>> Chart pie % productivo % detenido <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
 //########################################################################################################################################
 
-
 var productivo = 0;
 var detenido = 0;
-var dataPie=[1,1];
+var dataPie = [1, 1];
 var datap = {
   labels: ["detenido", "productivo"],
   datasets: [
@@ -295,7 +292,7 @@ const configp = {
       legend: {
         onHover: handleHover,
         onLeave: handleLeave,
-        fontColor: '#DFF3ED'
+        fontColor: "#DFF3ED",
       },
     },
   },
@@ -308,12 +305,11 @@ const configp2 = {
       legend: {
         onHover: handleHover,
         onLeave: handleLeave,
-        fontColor: 'r#DFF3ED'
+        fontColor: "r#DFF3ED",
       },
     },
   },
 };
-
 
 function tiempoEntre(inicio, fin) {
   var dataInicio = inicio.split(":");
@@ -335,168 +331,133 @@ function tiempoEntre(inicio, fin) {
   return segFin - segInicio;
 }
 
-
 // render init block
-var ChartPie= new Chart(document.getElementById("ChartPie"), configp);
+var ChartPie = new Chart(document.getElementById("ChartPie"), configp);
 
 function renderChartPie() {
   ChartPie.destroy();
   ChartPie = new Chart(document.getElementById("ChartPie"), configp2);
-  
 }
 
-let tiempos = [];  // variable del grafico de linea de tiempo
-
+let tiempos = []; // variable del grafico de linea de tiempo
 
 socket.on("select", function (datos) {
-  while (tiempos.length > 0) {    //para el grafico de linea de tiempo
+  while (tiempos.length > 0) {
+    //para el grafico de linea de tiempo
     tiempos.pop();
   }
-  
-  var arr = [];
-  dataPie[0]=0;
-  dataPie[1]=0;
- 
-  datos.forEach((result) => {
 
+  var arr = [];
+  dataPie[0] = 0;
+  dataPie[1] = 0;
+
+  datos.forEach((result) => {
     arr.push({ v1: result.v1, hora: result.Hora });
   });
   console.log(arr.length);
 
-
   for (let i = 0; i < arr.length; i++) {
+    if (i == 0) {
+      var t = tiempoEntre("09:00:00", arr[i].hora);
+      tiempos.push(t);
+    }
     if (arr[i].v1 == 0 && i < arr.length - 1) {
-    
-
-      var t = tiempoEntre(arr[i].hora, arr[i + 1].hora);
+      t = tiempoEntre(arr[i].hora, arr[i + 1].hora);
       dataPie[0] += t;
-      tiempos.push(t/20);
+      tiempos.push(t);
     }
-   
+
     if (arr[i].v1 == 1 && i < arr.length - 1) {
-      
-
-      var t2 = tiempoEntre(arr[i].hora, arr[i + 1].hora);
-      dataPie[1] += t2;
-      tiempos.push(t2/20);
+      t = tiempoEntre(arr[i].hora, arr[i + 1].hora);
+      dataPie[1] += t;
+      tiempos.push(t);
     }
-    
-    
   }
-  dataPie[0]=dataPie[0]/3600;
-  dataPie[1]=dataPie[1]/3600;
-
+  dataPie[0] = dataPie[0] / 3600;
+  dataPie[1] = dataPie[1] / 3600;
 
   renderChartPie();
   console.log(tiempos);
   canvas();
-
 });
-
-
 
 //>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>> Donut <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
 //########################################################################################################################################
 
-
-
-
-
 const dataDonut = {
-  labels: [
-    'element 1',
-    'element 2',
-  
+  labels: ["element 1", "element 2"],
+  datasets: [
+    {
+      label: "My First Dataset",
+      data: [300, 50],
+      backgroundColor: ["rgb(0, 168, 132)", "rgb(223, 243, 237)"],
+      hoverOffset: 4,
+    },
   ],
-  datasets: [{
-    label: 'My First Dataset',
-    data: [300, 50],
-    backgroundColor: [
-      'rgb(0, 168, 132)',
-      'rgb(223, 243, 237)'
-      
-    ],
-    hoverOffset: 4
-  }]
 };
 
 const configDonut = {
-  type: 'doughnut',
+  type: "doughnut",
   data: dataDonut,
 };
 
-var ChartDonut= new Chart(document.getElementById("ChartDonut"), configDonut);
-
+var ChartDonut = new Chart(document.getElementById("ChartDonut"), configDonut);
 
 //>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>> time-line <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
 //########################################################################################################################################
 
-
-
-
-
 function canvas() {
   var canvas = document.getElementById("timeline");
   var ctx = canvas.getContext("2d");
-  ctx.clearRect(0, 0, 900, 600);
+  ctx.clearRect(0, 0, 32400, 3000);
 
   function red(x, w) {
     ctx.fillStyle = "rgb(223, 243, 237)";
-    ctx.fillRect(x, 100, w, 100);
+    ctx.fillRect(x, 700, w, 1500);
   }
   function green(x, w) {
     ctx.fillStyle = "rgb(0, 168, 132)";
-    ctx.fillRect(x, 100, w, 100);
+    ctx.fillRect(x, 600, w, 1700);
   }
 
+  // X axe
+  ctx.fillStyle = "rgb(223, 243, 237)";
+  ctx.fillRect(0, 2300, 32400, 40);
+  for (let i = 0; i < 10; i++) {
+    if (i == 9) {
+      ctx.fillRect(i * 3600 - 90, 2300, 80, 200);
+    } else if (i == 0) {
+      ctx.fillRect(i * 3600, 2300, 70, 180);
+    } else {
+      ctx.fillRect(i * 3600 - 70, 2300, 70, 180);
+    }
+  }
 
   function graficar() {
     var x = 0;
     for (let i = 0; i < tiempos.length; i++) {
       if (i % 2 != 0) {
-        red(x, tiempos[i]);
-        x += tiempos[i];
-      } else {
         green(x, tiempos[i]);
         x += tiempos[i];
+      } else {
+        red(x, tiempos[i]);
+        x += tiempos[i];
+      }
+      ctx.font = "250px Comic Sans MS";
+      ctx.fillStyle = "white";
+      ctx.textAlign = "center";
+
+      if (i == 0) {
+        ctx.fillText(i + 9 + "hrs.", i * 3600 + 300, 2700);
+      } else if (i == 9) {
+        ctx.fillText(i + 9 + "hrs.", i * 3600 - 100, 2700);
+      } else {
+        ctx.fillText(i + 9 + "hrs.", i * 3600, 2700);
       }
     }
   }
-  
 
   graficar();
-  
 }
-function random() {
-  return Math.random() * (300 - 10) + 10;
-}
+
 //canvas();
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
