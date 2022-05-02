@@ -340,7 +340,7 @@ function renderChartPie() {
 }
 
 let tiempos = []; // variable del grafico de linea de tiempo
-
+let v1es1=true;
 socket.on("select", function (datos) {
   while (tiempos.length > 0) {
     //para el grafico de linea de tiempo
@@ -355,19 +355,27 @@ socket.on("select", function (datos) {
     arr.push({ v1: result.v1, hora: result.Hora });
   });
   console.log(arr.length);
+  console.log(arr);
+  if(arr[0].v1==1){
+    v1es1=true;
+  }else{
+    v1es1=false;
+  }
 
   for (let i = 0; i < arr.length; i++) {
     if (i == 0) {
-      var t = tiempoEntre("09:00:00", arr[i].hora);
+      var t = tiempoEntre("09:00:00", arr[i].hora);  // en que casos ??
       tiempos.push(t);
+      dataPie[0] += t;
     }
-    if (arr[i].v1 == 0 && i < arr.length - 1) {
+
+    if (arr[i].v1 == 0 && i < arr.length - 1) {   //tiepo maquina Detenida
       t = tiempoEntre(arr[i].hora, arr[i + 1].hora);
       dataPie[0] += t;
       tiempos.push(t);
     }
 
-    if (arr[i].v1 == 1 && i < arr.length - 1) {
+    if (arr[i].v1 == 1 && i < arr.length - 1) {  //tiempo maquina Activa
       t = tiempoEntre(arr[i].hora, arr[i + 1].hora);
       dataPie[1] += t;
       tiempos.push(t);
@@ -411,11 +419,11 @@ function canvas() {
   var ctx = canvas.getContext("2d");
   ctx.clearRect(0, 0, 32400, 3000);
 
-  function red(x, w) {
+  function green(x, w) {
     ctx.fillStyle = "rgb(223, 243, 237)";
     ctx.fillRect(x, 700, w, 1500);
   }
-  function green(x, w) {
+  function red(x, w) {
     ctx.fillStyle = "rgb(0, 168, 132)";
     ctx.fillRect(x, 600, w, 1700);
   }
@@ -436,13 +444,24 @@ function canvas() {
   function graficar() {
     var x = 0;
     for (let i = 0; i < tiempos.length; i++) {
-      if (i % 2 != 0) {
-        green(x, tiempos[i]);
-        x += tiempos[i];
-      } else {
-        red(x, tiempos[i]);
-        x += tiempos[i];
+      if(v1es1){
+        if (i % 2 != 0) {
+          red(x, tiempos[i]);
+          x += tiempos[i];
+        } else {
+          green(x, tiempos[i]);
+          x += tiempos[i];
+        }
+      }else{
+        if (i % 2 != 0) {
+          green(x, tiempos[i]);
+          x += tiempos[i];
+        } else {
+          red(x, tiempos[i]);
+          x += tiempos[i];
+        }
       }
+     
       ctx.font = "250px Comic Sans MS";
       ctx.fillStyle = "white";
       ctx.textAlign = "center";

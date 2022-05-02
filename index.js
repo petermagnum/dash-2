@@ -1,14 +1,14 @@
 //fecha actual
 let date = new Date();
-/*
+
 let Fecha =
   date.getFullYear() +
   "-" +
   String(date.getMonth() + 1).padStart(2, "0") +
   "-" +
   String(date.getDate()).padStart(2, "0");
-*/
-let Fecha ='2022-04-15'
+
+//let Fecha ='2022-04-15'
 
 //ARCHIVO DEL SERVIDOR
 const path = require("path"); // modulo para trabajar con las rutas y unir directorios
@@ -51,21 +51,21 @@ io.on("connection", (socket) => {
 
 //BD
 var mysql = require("mysql");
-var tabla ="cerradoras" ;// "tb_Registro_Proc_10002824";"cerradoras" ;
+var tabla ="tb_Registro_Proc_10002824";// "tb_Registro_Proc_10002824";"cerradoras" ;
 
 var conexion = mysql.createConnection({
   //tb_Registro_Proc_10002824
-
+/*
   host: "localhost",
   database: "rosen",
   user: "root",
   password: "",
-    /*
+ */
   host: "172.16.44.150",
   database: "db_MODBUS",
   user: "ctrujillo",
   password: "d2021ct",
- */
+ 
 });
 
 conexion.connect(function (error) {
@@ -80,7 +80,7 @@ conexion.connect(function (error) {
 var uCerradas = [];
 let numeroRegistrosDB = 0;
 let nuevoRegistro = false;
-//let Fecha='2022-04-15'
+
 
 // consultas
 
@@ -171,7 +171,7 @@ function inicio() {
 function select(fecha) {
   if (nuevoRegistro) {
     conexion.query(
-      "SELECT * FROM " + tabla + " where Fecha = '" + fecha + "' and Hora>= '08:30:00' and Hora<= '18:00:00'",
+      "SELECT * FROM " + tabla + " where Fecha = '" + fecha + "' and Hora>= '09:00:00' and Hora<= '18:00:00'",
 
       function (error, results, fields) {
         if (error) throw error;
