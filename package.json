@@ -12,6 +12,7 @@
   "license": "ISC",
   "dependencies": {
     "chart.js": "^3.7.1",
+    "chartjs-plugin-labels": "^1.1.0",
     "express": "^4.17.3",
     "flatpickr": "^4.6.13",
     "mysql": "^2.18.1",

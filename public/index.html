@@ -6,116 +6,86 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <!-- <link rel="stylesheet" href="style.css"> -->
-    <link rel="stylesheet" href="style2.css">
+    <link rel="stylesheet" href="style.css">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/3.7.1/chart.min.js"></script>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet"
         integrity="sha384-1BmE4kWBq78iYhFldvKuhfTAU6auU8tT94WrHftjDbrCEXSU1oBoqyl2QvZ6jIW3" crossorigin="anonymous">
+
     <title>Dashboard Produccion</title>
 </head>
 
 <body>
+    <div id="app">
 
-    <div id="main">
+        <div id="main">
 
-        <div id="container-left">
-            <div id="left-item">
-                <button class="btn btn-dark " onclick="launchFullScreen(document.documentElement);"> full screen
-                </button>
+            <div id="container-left">
+                <div id="left-top">
+                    <div id="left-top-left">
+                        <div id="buttons">
+                            <button class="btn btn-warning " onclick="">Go back
+                            </button>
+                            <button class="btn btn-dark " onclick="launchFullScreen(document.documentElement);"> full
+                                screen
+                            </button>
+                        </div>
 
-                <form action="">
-                    <input id="fecha" class="form-control" type="date" placeholder="Seleccione Fecha">
-                </form>
+                        <div id="info-maquina-operario"></div>
+                        <form action="">
+                            <input id="fecha" class="form-control" type="date" placeholder="Seleccione Fecha">
+                        </form>
+                    </div>
+
+                    <div id="left-top-rigth">
+                        <div id="total"></div>
+                    </div>
+                </div>
+                <div id="left-bottom">
+
+                    <div id="left-bottom-left">
+                        <div id="info2"></div>
+                    </div>
+                    <div id="left-bottom-rigth">
+                        <canvas id="ChartDonut" width="auto" height="auto"></canvas>
+                    </div>
+                </div>
             </div>
-            <div id="left-item">
-                <div id="total"></div>
-            </div>
-            <div id="left-item">
-                <canvas id="ChartDonut" width="auto" height="auto"></canvas>
-            </div>
-            <div id="left-item">
-                <canvas id="ChartPie" width="auto" height="auto"></canvas>
-            </div>
-        </div>
+            <div id="container-right">
+                <div id="right-top">
+                    <div id="chartBar-container">
+                        <canvas id="myChart" width="auto" height="auto"></canvas>
+                    </div>
 
-        <div id="container-right">
-            <div id="right-top">
+                </div>
+                <div id="right-bottom">
+                    <div id="rigth-bottom-left">
+                        <div id="info3">
 
-              
-            </div>
-            <div id="right-bottom">
+                        </div>
+                    </div>
 
-                <canvas id="myChart" width="auto" height="auto"></canvas>
-            </div>
-        </div>
-
-    </div>
-    <div id="footer">
-        <canvas id="timeline" width="32400" height="3000"></canvas>
-
-    </div>
-
-
-
-
-
-
-
-    <!-- 
-    <div id="head">
-        <button onclick="launchFullScreen(document.documentElement);"> Entrar en pantalla completa </button>
-        <button onclick="cancelFullScreen();"> Salir de pantalla completa </button>
-
-    </div>
-    <h1>Dashboard roSen </h1>
-    <form action="">
-        <input id="fecha" class="form-control" type="date" placeholder="Seleccione Fecha">
-    </form>
-    <div id="container">
-
-
-        <div id="window">
-
-            <h2>Turno dia (un x hrs)</h2>
-
-            <div id="output">
-                <canvas id="myChart" width="600px" height="600px">
-                </canvas>
+                    <div id="rigth-bottom-rigth">
+                        <canvas id="ChartPie" width="auto" height="auto"></canvas>
+                    </div>
+                </div>
             </div>
         </div>
-        <div id="window-2">
-            <div id="total">
-            </div>
-
-            <div id="output">
-                <h2>maquina activa & maquina detenida</h2>
-                <canvas id="ChartPie" width="50%" height="50%">
-                </canvas>
-            </div>
-
+        <div id="footer">
+            <canvas id="timeline" width="32400" height="3000"></canvas>
         </div>
 
     </div>
-      -->
 
     <script src="/socket.io/socket.io.js"></script>
     <script src="charts.js"></script>
 
-    <!-- 
-        
-    <script src="app.js"></script>
-    <script src="chart-pie.js"></script>
-   
-               <div id="window">
-            <h2>Tiempos de Produccion</h2>
-            <div id="output">
-                <canvas id="ChartPie" width="400" height="400">
-                </canvas>     
-            </div>          
-        </div>
-        <div id="container">
-        </div>
-        
-    -->
+    <script
+        src="https://cdnjs.cloudflare.com/ajax/libs/chartjs-plugin-datalabels/2.0.0/chartjs-plugin-datalabels.min.js"
+        integrity="sha512-R/QOHLpV1Ggq22vfDAWYOaMd5RopHrJNMxi8/lJu8Oihwi4Ho4BRFeiMiCefn9rasajKjnx9/fTQ/xkWnkDACg=="
+        crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+
+
+
 
 
     <script>

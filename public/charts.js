@@ -1,6 +1,27 @@
 const socket = io();
+let date = new Date();
+
+let Fecha =
+  date.getFullYear() +
+  "-" +
+  String(date.getMonth() + 1).padStart(2, "0") +
+  "-" +
+  String(date.getDate()).padStart(2, "0");
+
+let Hora = date.getHours() + ":" + date.getMinutes() + ":" + date.getSeconds();
 
 let total = document.getElementById("total");
+let infoMaquinaOperario = document.getElementById("info-maquina-operario");
+let info2 = document.getElementById("info2");
+
+let cerradora = "10002824";
+let operario = "xxxxxxxxxx";
+
+let uxhr = 0;
+let promedioTiempoActiva = 0; // sin considerar anomalias > 30 min
+let promedioTiempoDetenida = 0; // sin considerar anomalias > 30 min
+
+let sumaTotal = 0;
 
 var fecha = document.getElementById("fecha");
 fecha.addEventListener("change", function () {
@@ -67,6 +88,7 @@ let data2 = {
     },
   ],
 };
+
 let data3 = {
   labels: [
     "[9-10]",
@@ -119,6 +141,7 @@ let config = {
     },
   },
 };
+
 let config2 = {
   type: "bar",
   data: data2,
@@ -143,6 +166,7 @@ let config2 = {
     },
   },
 };
+
 let config3 = {
   type: "bar",
   data: data3,
@@ -170,18 +194,26 @@ let config3 = {
 
 // render init block
 var myChart = new Chart(document.getElementById("myChart"), config);
-
-
+myChart.onclick = function (evt) {
+  var activePoints = myLineChart.getElementsAtEvent(evt);
+  console.log(activePoints);
+};
 
 function renderChartX() {
   myChart.destroy();
   myChart = new Chart(document.getElementById("myChart"), config3);
- 
+  myChart.onclick = function (evt) {
+    var activePoints = myLineChart.getElementsAtEvent(evt);
+    console.log(activePoints);
+  };
 }
 function renderChart() {
   myChart.destroy();
   myChart = new Chart(document.getElementById("myChart"), config2);
-
+  myChart.onclick = function (evt) {
+    var activePoints = myLineChart.getElementsAtEvent(evt);
+    console.log(activePoints);
+  };
 }
 
 socket.on("start", function (data) {
@@ -196,7 +228,7 @@ socket.on("start", function (data) {
   oldData[8] = data[8];
 
   renderChartX();
-  let sumaTotal =
+  sumaTotal =
     data[0] +
     data[1] +
     data[2] +
@@ -206,8 +238,30 @@ socket.on("start", function (data) {
     data[6] +
     data[7] +
     data[8];
-  total.innerHTML = `<h1 id="tot" > ${sumaTotal}</h1> uds/dia `;
+
+  total.innerHTML = `<h1 id="tot" > ${sumaTotal}</h1> uds. `;
+  infoMaquinaOperario.innerHTML = `<h4> C. Veque   n° ${cerradora}</h4>
+                                  <h4> Operario: ${operario}</h4>   `;
+
+  socket.on("tasaEstandar", function (datos) {
+    info2.innerHTML = ` <h4 id="info">Periodo [9am. - ${Hora}]</h4> 
+    <h4 id="info">Tasa Estandar: ${datos}</h4> 
+    <h4 id="info">Eficiencia: ${Math.round((sumaTotal / datos) * 100)} %</h4> `;
+  });
 });
+
+function realTime(){
+  info2.innerHTML = ` <h4 id="info">Periodo [9am. - ${Hora}]</h4> 
+  <h4 id="info">Tasa Estandar: ${datos}</h4> 
+  <h4 id="info">Eficiencia: ${Math.round((sumaTotal / datos) * 100)} %</h4> `;
+
+}
+function repetirCadaXSegundos() {
+  let identificadorIntervaloDeTiempo = setInterval(realTime, 1000);
+}
+
+repetirCadaXSegundos();
+
 
 socket.on("Cerradas", function (data) {
   //newData = data;
@@ -233,34 +287,45 @@ socket.on("Cerradas", function (data) {
     data[6] +
     data[7] +
     data[8];
-  total.innerHTML = `<h1 id="tot"> ${sumaTotal}</h1> uds/dia `;
+  total.innerHTML = `<h1 id="tot"> ${sumaTotal}</h1> uds. `;
+  socket.on("tasaEstandar", function (datos) {
+    info2.innerHTML = ` <h4 id="info">Periodo [9am. - ${Hora}]</h4> 
+    <h4 id="info">Tasa Estandar: ${datos}</h4> 
+    <h4 id="info">Eficiencia: ${Math.round((sumaTotal / datos) * 100)} %</h4> `;
+  
+  });
 });
+//>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>> Iformacion de la Produccion<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
+//########################################################################################################################################
 
 //>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>> Chart pie % productivo % detenido <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
 //########################################################################################################################################
 
 var productivo = 0;
 var detenido = 0;
-var dataPie = [1, 1];
+var dataPie = [];
 var datap = {
-  labels: ["detenido", "productivo"],
+  labels: ["DETENIDA ", "ACTIVA "],
   datasets: [
     {
       label: "# of Votes",
       data: dataPie,
       borderWidth: 1,
       backgroundColor: ["#DFF3ED", "#00a884"],
+      fontColor: "white",
     },
   ],
 };
+
 var datap2 = {
-  labels: ["detenido", "productivo"],
+  labels: ["DETENIDA", "ACTIVA"],
   datasets: [
     {
       label: "# of Votes",
       data: dataPie,
       borderWidth: 1,
       backgroundColor: ["#DFF3ED", "#00a884"],
+      fontColor: "white",
     },
   ],
 };
@@ -289,6 +354,15 @@ const configp = {
   data: datap,
   options: {
     plugins: {
+      labels: {
+        render: "percentage",
+        fontColor: "#00a884",
+        fontStyle: "bolder",
+      },
+      animation: {
+        animateScale: true,
+        animateRotate: true,
+      },
       legend: {
         onHover: handleHover,
         onLeave: handleLeave,
@@ -302,6 +376,16 @@ const configp2 = {
   data: datap2,
   options: {
     plugins: {
+      labels: {
+        render: "percentage",
+        fontColor: "#00a884",
+        fontStyle: "bolder",
+      },
+      animation: {
+        animateScale: true,
+        animateRotate: true,
+      },
+
       legend: {
         onHover: handleHover,
         onLeave: handleLeave,
@@ -340,7 +424,7 @@ function renderChartPie() {
 }
 
 let tiempos = []; // variable del grafico de linea de tiempo
-let v1es1=true;
+let v1es1 = true;
 socket.on("select", function (datos) {
   while (tiempos.length > 0) {
     //para el grafico de linea de tiempo
@@ -356,26 +440,28 @@ socket.on("select", function (datos) {
   });
   console.log(arr.length);
   console.log(arr);
-  if(arr[0].v1==1){
-    v1es1=true;
-  }else{
-    v1es1=false;
+  if (arr[0].v1 == 1) {
+    v1es1 = true;
+  } else {
+    v1es1 = false;
   }
 
   for (let i = 0; i < arr.length; i++) {
     if (i == 0) {
-      var t = tiempoEntre("09:00:00", arr[i].hora);  // en que casos ??
+      var t = tiempoEntre("09:00:00", arr[i].hora); // en que casos ??
       tiempos.push(t);
       dataPie[0] += t;
     }
 
-    if (arr[i].v1 == 0 && i < arr.length - 1) {   //tiepo maquina Detenida
+    if (arr[i].v1 == 0 && i < arr.length - 1) {
+      //tiepo maquina Detenida
       t = tiempoEntre(arr[i].hora, arr[i + 1].hora);
       dataPie[0] += t;
       tiempos.push(t);
     }
 
-    if (arr[i].v1 == 1 && i < arr.length - 1) {  //tiempo maquina Activa
+    if (arr[i].v1 == 1 && i < arr.length - 1) {
+      //tiempo maquina Activa
       t = tiempoEntre(arr[i].hora, arr[i + 1].hora);
       dataPie[1] += t;
       tiempos.push(t);
@@ -407,6 +493,44 @@ const dataDonut = {
 const configDonut = {
   type: "doughnut",
   data: dataDonut,
+  options: {
+    //cutoutPercentage: 50,
+    maintainAspectRatio: true,
+    responsive: true,
+    legend: {
+      display: false,
+    },
+    animation: {
+      animateScale: true,
+      animateRotate: true,
+    },
+  },
+  plugins: {
+    id: "total",
+    beforeDraw: function (chart) {
+      const width = chart.chart.width;
+      const height = chart.chart.height;
+      const ctx = chart.chart.ctx;
+      ctx.restore();
+      const fontSize = (height / 114).toFixed(2);
+      ctx.font = fontSize + "em sans-serif";
+      ctx.textBaseline = "middle";
+      ctx.fontColor = "white";
+      var total = data.datasets[0].data.reduce(function (
+        previousValue,
+        currentValue,
+        currentIndex,
+        array
+      ) {
+        return previousValue + currentValue;
+      });
+      const text = total;
+      const textX = Math.round((width - ctx.measureText(text).width) / 2);
+      const textY = height / 2;
+      ctx.fillText(text, textX, textY);
+      ctx.save();
+    },
+  },
 };
 
 var ChartDonut = new Chart(document.getElementById("ChartDonut"), configDonut);
@@ -444,7 +568,7 @@ function canvas() {
   function graficar() {
     var x = 0;
     for (let i = 0; i < tiempos.length; i++) {
-      if(v1es1){
+      if (v1es1) {
         if (i % 2 != 0) {
           red(x, tiempos[i]);
           x += tiempos[i];
@@ -452,7 +576,7 @@ function canvas() {
           green(x, tiempos[i]);
           x += tiempos[i];
         }
-      }else{
+      } else {
         if (i % 2 != 0) {
           green(x, tiempos[i]);
           x += tiempos[i];
@@ -461,7 +585,7 @@ function canvas() {
           x += tiempos[i];
         }
       }
-     
+
       ctx.font = "250px Comic Sans MS";
       ctx.fillStyle = "white";
       ctx.textAlign = "center";
