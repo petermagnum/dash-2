@@ -10,9 +10,7 @@ let Fecha =
 
 let Hora = date.getHours() + ":" + date.getMinutes() + ":" + date.getSeconds();
 
-
 //let Fecha ='2022-04-15'
-
 
 //ARCHIVO DEL SERVIDOR
 const path = require("path"); // modulo para trabajar con las rutas y unir directorios
@@ -40,37 +38,34 @@ const io = SocketIO(server);
 io.on("connection", (socket) => {
   socket.on("fechaSelec", (data) => {
     Fecha = data;
-    Hora='18:00:00';
     console.log(Fecha);
     nuevoRegistro = true;
-
   });
 
   //el primer evento a escuchar es cuando se conecta un nuevo cliente
   console.log("Socket conection Exitosa", socket.id);
   queryBD();
   io.sockets.emit("start", uCerradas);
-  tasaEstandar("09:00:00", Hora, Fecha);
 
 });
 
 //BD
 var mysql = require("mysql");
-var tabla = "tb_Registro_Proc_10002824" ;// "tb_Registro_Proc_10002824";"cerradoras" ;
+var tabla = "tb_Registro_Proc_10002824";// "tb_Registro_Proc_10002824";"cerradoras" ;
 
 var conexion = mysql.createConnection({
   //tb_Registro_Proc_10002824
-  /*
+ /*
   host: "localhost",
   database: "rosen",
   user: "root",
   password: "",
- */
+  */
   host: "172.16.44.150",
   database: "db_MODBUS",
   user: "ctrujillo",
-  password: "d2021ct",
-  
+  password: "d2021ct", 
+ 
 });
 
 conexion.connect(function (error) {
@@ -122,7 +117,6 @@ function Contar(hi, hf, fecha) {
       if (error) throw error;
 
       nCerrados = results[0].registros;
-     
 
       console.log(
         "n° cerrados en " +
@@ -146,14 +140,17 @@ function Contar(hi, hf, fecha) {
 let nCerradosHoy = 0;
 let nCerradosHastaHoy = 0;
 
-function tasaEstandar(hi, hf, fecha) {   //eficiencia en la productividad
+function tasaEstandar(hi, hf,fechaStart, fecha) {
+  //eficiencia en la productividad
   if (nuevoRegistro) {
     //contara todas las unidades cerradas hasta la fecha dentro del periodo  [hi-hf]
     conexion.query(
       "select count(*) as registros from " +
         tabla +
-        " where Fecha <= '" +
-        fecha +
+        " where Fecha >= '" +
+        fechaStart +
+        "' and Fecha <= '" +
+        fecha  +
         "' and v1= 0 and Hora>= '" +
         hi +
         "' and Hora < '" +
@@ -164,14 +161,13 @@ function tasaEstandar(hi, hf, fecha) {   //eficiencia en la productividad
 
         nCerradosHastaHoy = results[0].registros;
 
-        var fechaInicio = new Date("2021-12-13").getTime();
-        var fechaFin = new Date(Fecha).getTime();
-        var dias = (fechaFin - fechaInicio) / (1000 * 60 * 60 * 24)-1; //dias transcurridos desde el primer registro hasta ayer
+        var fechaInicio = new Date(fechaStart).getTime();
+        var fechaFin = new Date(fecha).getTime();
+        var dias = (fechaFin - fechaInicio) / (1000 * 60 * 60 * 24) - 1; // dias transcurridos desde el primer registro hasta ayer
         let tasaEstandar = Math.round(nCerradosHastaHoy / dias);
-   
 
         console.log(
-          "n° cerrados desde Fecha(1° registro) hasta " +
+          "n° cerrados desde "+fechaStart+" hasta " +
             fecha +
             " entre [" +
             hi +
@@ -183,7 +179,7 @@ function tasaEstandar(hi, hf, fecha) {   //eficiencia en la productividad
             tasaEstandar
         );
 
-        io.sockets.emit("tasaEstandar", tasaEstandar);
+        io.sockets.emit("tasaEstandar", tasaEstandar+11);    //ese  +11 es un numero rndom para amortiguar el error de los dias en los que el promedio fue cero o muy bajo
       }
     );
   }
@@ -238,10 +234,12 @@ function select(fecha) {
 }
 
 function queryBD() {
+  date = new Date();
+  Hora = date.getHours() + ":" + date.getMinutes() + ":" + date.getSeconds();
   EscucharBD();
   select(Fecha);
   unDiarias(Fecha);
-  tasaEstandar("09:00:00", Hora, Fecha);
+  tasaEstandar("09:00:00", Hora, '2022-05-07',Fecha);
 }
 
 function repetirCadaXSegundos() {
@@ -249,4 +247,3 @@ function repetirCadaXSegundos() {
 }
 
 repetirCadaXSegundos();
-
