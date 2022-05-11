@@ -1,16 +1,21 @@
+
+:root{
+    --back:    #111B21; /*#111B21;*/
+    --border:  #202C33;/*#202C33;*/
+}
+
 body {
   
-   
 }
+
 #app{
     display: flex;
-    background-color:  #111B21/*#1E1E1E*/;
+    background-color:  var(--back)/*#1E1E1E*/;
     flex-direction: column;
     justify-content: space-between;
     width: 100%;
     height: 100vh;
    
-
 }
 #main {
     display: flex;
@@ -18,13 +23,13 @@ body {
     justify-content: space-around;
     width: 100%;
     height: 79vh;
-    background-color:  #111B21/*#1E1E1E*/
+    background-color: var(--back)/*#1E1E1E*/
 
 }
 #footer{
     width: 100%;
     height:19vh;
-    background-color:  #111B21/*#1E1E1E*/;    
+    background-color:   var(--back)/*#1E1E1E*/;    
 }
 #container-right {
     display: flex;
@@ -55,7 +60,7 @@ body {
     align-items:center;
     justify-content:center;
     text-align: center;
-    border: 2px solid #202C33;
+    border: 2px solid var(--border);
     border-radius: 15px;
 
 
@@ -66,22 +71,37 @@ body {
     justify-content: space-between;
     width: 100%;
     height: 45%; 
-    border: 2px solid #202C33;
+    border: 2px solid var(--border);
     border-radius: 15px;
    
 }
-#left-bottom-left {
+#right-bottom-left {
     display: flex;
+    flex-direction: column;
     align-items: center;
     justify-content: center;
     width: 50%;
     height: 100%; 
     
 }
+#operario{
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+    height: 25%; 
+    font-size: 150%;
+    color: #DFF3ED;
+}
+
 #info2{
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+    align-items: flex-start;
     color: white;
 }
-#rigth-bottom-rigth {
+#right-bottom-right {
     display: flex;
     align-items: center;
     justify-content: center;
@@ -119,9 +139,17 @@ body {
     justify-content: center;
     width:  49%;
     height: 100%; 
-     border: 2px solid #202C33;
+     border: 2px solid var(--border);
     border-radius: 15px;
 
+}
+
+
+#buttons{
+    display: flex;
+    justify-content: space-between;
+    width:  60%;
+  
 }
 #info-maquina-operario{
     display: flex;
@@ -130,18 +158,41 @@ body {
     margin: 5%;
 
 }
+
 #fecha{
     width: 100%;
 }
 
-#left-top-rigth{
+#periodo{
+    display: flex;
+    width: 82%;
+    height: 12%;
+    justify-content: space-around;
+    color: white;
+    margin: 5%;
+ 
+
+}
+
+#horaActual{
+    display: flex;
+    width: 30%;
+    height: 100%;
+    justify-content: start;
+    align-items: flex-start;
+    color: #00FF99;
+
+  
+}
+
+#left-top-right{
     display: flex;
     flex-direction: column;
     align-items: center;
     justify-content: center;
     width: 49%; 
     height: 100%; 
-    border: 2px solid #202C33;
+    border: 2px solid var(--border);
     border-radius: 15px;
     
 
@@ -172,23 +223,39 @@ body {
     justify-content: space-between;
     width: 100%;
     height: 45%; 
-    border: 2px solid #202C33;
+    border: 2px solid var(--border);
     border-radius: 15px;
 
 }
 #left-bottom-left {
     display: flex;
+    flex-direction: column;
     align-items: center;
     justify-content: center;
     width: 50%;
     height: 100%; 
     color:1px solid white;
 }
+#maquina{
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+    height: 25%; 
+    font-size: 150%;
+    color: #DFF3ED;
+}
 #info{
     color: white;
 }
+#info-activa{
+    color: #00ff99;
+}
+#info-detenida{
+    color: white;
+}
 
-#left-bottom-rigth {
+#left-bottom-right {
     display: flex;
     align-items: center;
     justify-content: center;
@@ -216,7 +283,8 @@ body {
 #myChart{
     width: 80%;
     height: 80%;
-    margin: 0 auto;
+    margin: 0 auto ;
+  
 
    
 }
@@ -225,9 +293,15 @@ body {
     height: 100%;
     margin: 0 auto;
     display: block;
-    border: 2px solid #202C33;
+    border: 2px solid var(--border);
     border-radius: 15px;
       
 }
+
+@media only screen and (max-width: 600px) {
+    #app {
+      background-color: lightblue;
+    }
+  }
 
 

@@ -9,13 +9,17 @@ let Fecha =
   String(date.getDate()).padStart(2, "0");
 
 let Hora = date.getHours() + ":" + date.getMinutes() + ":" + date.getSeconds();
+let eficiencia;
+
 
 let total = document.getElementById("total");
 let infoMaquinaOperario = document.getElementById("info-maquina-operario");
 let info2 = document.getElementById("info2");
+let info3 = document.getElementById("info3");
+let periodo =  document.getElementById("periodo");
 
 let cerradora = "10002824";
-let operario = "xxxxxxxxxx";
+let operario = "G. Ormeño";
 
 let uxhr = 0;
 let promedioTiempoActiva = 0; // sin considerar anomalias > 30 min
@@ -35,6 +39,8 @@ window.addEventListener("load", function () {
 
 var oldData = [];
 var newData = [];
+
+
 
 //>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>> Chart Barras unidades x Hora <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
 //########################################################################################################################################
@@ -241,27 +247,28 @@ socket.on("start", function (data) {
 
   total.innerHTML = `<h1 id="tot" > ${sumaTotal}</h1> uds. `;
   infoMaquinaOperario.innerHTML = `<h4> C. Veque   n° ${cerradora}</h4>
-                                  <h4> Operario: ${operario}</h4>   `;
+                                  <h4> Operario: ${operario}</h4>  
+                              `;
 
   socket.on("tasaEstandar", function (datos) {
-    info2.innerHTML = ` <h4 id="info">Periodo [9am. - ${Hora}]</h4> 
+
+    eficiencia=Math.round((sumaTotal / datos) * 100);
+    info2.innerHTML = ` 
     <h4 id="info">Tasa Estandar: ${datos}</h4> 
-    <h4 id="info">Eficiencia: ${Math.round((sumaTotal / datos) * 100)} %</h4> `;
+    <h4 id="info">Eficiencia: ${eficiencia} %</h4> `;
+    console.log('sumaTotal:'+sumaTotal)
+    console.log('datos:'+datos)
   });
+  var ChartDonut = new Chart(document.getElementById("ChartDonut"), configDonut);
+
 });
 
-function realTime(){
-  info2.innerHTML = ` <h4 id="info">Periodo [9am. - ${Hora}]</h4> 
-  <h4 id="info">Tasa Estandar: ${datos}</h4> 
-  <h4 id="info">Eficiencia: ${Math.round((sumaTotal / datos) * 100)} %</h4> `;
 
-}
 function repetirCadaXSegundos() {
   let identificadorIntervaloDeTiempo = setInterval(realTime, 1000);
 }
 
 repetirCadaXSegundos();
-
 
 socket.on("Cerradas", function (data) {
   //newData = data;
@@ -289,10 +296,13 @@ socket.on("Cerradas", function (data) {
     data[8];
   total.innerHTML = `<h1 id="tot"> ${sumaTotal}</h1> uds. `;
   socket.on("tasaEstandar", function (datos) {
-    info2.innerHTML = ` <h4 id="info">Periodo [9am. - ${Hora}]</h4> 
+    eficiencia=Math.round((sumaTotal / datos) * 100);
+    info2.innerHTML = `
     <h4 id="info">Tasa Estandar: ${datos}</h4> 
     <h4 id="info">Eficiencia: ${Math.round((sumaTotal / datos) * 100)} %</h4> `;
-  
+
+    infoMaquinaOperario.innerHTML = `<h4> C. Veque   n° ${cerradora}</h4>
+    <h4> Operario: ${operario}</h4> `;
   });
 });
 //>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>> Iformacion de la Produccion<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
@@ -423,7 +433,7 @@ function renderChartPie() {
   ChartPie = new Chart(document.getElementById("ChartPie"), configp2);
 }
 
-let tiempos = []; // variable del grafico de linea de tiempo
+let tiempos = []; // varible of time-line chart
 let v1es1 = true;
 socket.on("select", function (datos) {
   while (tiempos.length > 0) {
@@ -440,6 +450,8 @@ socket.on("select", function (datos) {
   });
   console.log(arr.length);
   console.log(arr);
+
+  //the variable is being used in the time-line chart
   if (arr[0].v1 == 1) {
     v1es1 = true;
   } else {
@@ -473,17 +485,44 @@ socket.on("select", function (datos) {
   renderChartPie();
   console.log(tiempos);
   canvas();
+
+  info3.innerHTML = ` 
+  <h4 id="info-activa">Activa:     ${round(dataPie[1])} hrs.</h4>
+  <h4 id="info-detenida">Detenida: ${round(dataPie[0])} hrs.</h4> `;
 });
+
+function round(num) {
+  var m = Number((Math.abs(num) * 100).toPrecision(15));
+  return (Math.round(m) / 100) * Math.sign(num);
+}
+
+//>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>> RealTime <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
+//########################################################################################################################################
+
+function realTime() {
+  date = new Date();
+  Hora = date.getHours() + ":" + date.getMinutes() + ":" + date.getSeconds();
+  /*
+  if(Hora>'18:00:00'){     implemetar de bueba forma no esta funcionando
+    Hora='18:00:00';
+  } 
+  */     
+  horaActual.innerHTML = ` 
+  <h4> ${Hora} </h4> `;
+  canvas();
+}
 
 //>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>> Donut <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
 //########################################################################################################################################
 
 const dataDonut = {
-  labels: ["element 1", "element 2"],
+
+
+  labels: ["Eficiencia", ""],
   datasets: [
     {
       label: "My First Dataset",
-      data: [300, 50],
+      data: [83,100-83],
       backgroundColor: ["rgb(0, 168, 132)", "rgb(223, 243, 237)"],
       hoverOffset: 4,
     },
@@ -507,33 +546,9 @@ const configDonut = {
   },
   plugins: {
     id: "total",
-    beforeDraw: function (chart) {
-      const width = chart.chart.width;
-      const height = chart.chart.height;
-      const ctx = chart.chart.ctx;
-      ctx.restore();
-      const fontSize = (height / 114).toFixed(2);
-      ctx.font = fontSize + "em sans-serif";
-      ctx.textBaseline = "middle";
-      ctx.fontColor = "white";
-      var total = data.datasets[0].data.reduce(function (
-        previousValue,
-        currentValue,
-        currentIndex,
-        array
-      ) {
-        return previousValue + currentValue;
-      });
-      const text = total;
-      const textX = Math.round((width - ctx.measureText(text).width) / 2);
-      const textY = height / 2;
-      ctx.fillText(text, textX, textY);
-      ctx.save();
-    },
+
   },
 };
-
-var ChartDonut = new Chart(document.getElementById("ChartDonut"), configDonut);
 
 //>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>> time-line <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
 //########################################################################################################################################
@@ -552,7 +567,7 @@ function canvas() {
     ctx.fillRect(x, 600, w, 1700);
   }
 
-  // X axe
+  // X axes
   ctx.fillStyle = "rgb(223, 243, 237)";
   ctx.fillRect(0, 2300, 32400, 40);
   for (let i = 0; i < 10; i++) {
@@ -564,7 +579,7 @@ function canvas() {
       ctx.fillRect(i * 3600 - 70, 2300, 70, 180);
     }
   }
-
+  
   function graficar() {
     var x = 0;
     for (let i = 0; i < tiempos.length; i++) {
@@ -576,6 +591,7 @@ function canvas() {
           green(x, tiempos[i]);
           x += tiempos[i];
         }
+
       } else {
         if (i % 2 != 0) {
           green(x, tiempos[i]);
@@ -585,7 +601,7 @@ function canvas() {
           x += tiempos[i];
         }
       }
-
+      //painting labels of x axes
       ctx.font = "250px Comic Sans MS";
       ctx.fillStyle = "white";
       ctx.textAlign = "center";
@@ -598,8 +614,10 @@ function canvas() {
         ctx.fillText(i + 9 + "hrs.", i * 3600, 2700);
       }
     }
-  }
 
+
+  
+  }
   graficar();
 }
 

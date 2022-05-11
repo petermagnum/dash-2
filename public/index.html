@@ -16,9 +16,7 @@
 
 <body>
     <div id="app">
-
         <div id="main">
-
             <div id="container-left">
                 <div id="left-top">
                     <div id="left-top-left">
@@ -29,23 +27,27 @@
                                 screen
                             </button>
                         </div>
-
                         <div id="info-maquina-operario"></div>
                         <form action="">
                             <input id="fecha" class="form-control" type="date" placeholder="Seleccione Fecha">
                         </form>
-                    </div>
+                        <div id="periodo">
+                            <h4>Periodo: 9:00:00 - </h4>
+                            <div id="horaActual"></div>
+                        </div>
+                        
 
-                    <div id="left-top-rigth">
+                    </div>
+                    <div id="left-top-right">
                         <div id="total"></div>
                     </div>
                 </div>
                 <div id="left-bottom">
-
                     <div id="left-bottom-left">
+                        <div id="operario">Operario</div>
                         <div id="info2"></div>
                     </div>
-                    <div id="left-bottom-rigth">
+                    <div id="left-bottom-right">
                         <canvas id="ChartDonut" width="auto" height="auto"></canvas>
                     </div>
                 </div>
@@ -55,16 +57,14 @@
                     <div id="chartBar-container">
                         <canvas id="myChart" width="auto" height="auto"></canvas>
                     </div>
-
                 </div>
                 <div id="right-bottom">
-                    <div id="rigth-bottom-left">
+                    <div id="right-bottom-left">
+                        <div id="maquina">Maquina</div>
                         <div id="info3">
-
                         </div>
                     </div>
-
-                    <div id="rigth-bottom-rigth">
+                    <div id="right-bottom-right">
                         <canvas id="ChartPie" width="auto" height="auto"></canvas>
                     </div>
                 </div>
