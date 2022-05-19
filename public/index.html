@@ -12,6 +12,9 @@
         integrity="sha384-1BmE4kWBq78iYhFldvKuhfTAU6auU8tT94WrHftjDbrCEXSU1oBoqyl2QvZ6jIW3" crossorigin="anonymous">
 
     <title>Dashboard Produccion</title>
+
+ 
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
 </head>
 
 <body>
@@ -21,22 +24,26 @@
                 <div id="left-top">
                     <div id="left-top-left">
                         <div id="buttons">
-                            <button class="btn btn-warning " onclick="">Go back
+                            <button id="btn" class="btn btn-warning " onclick="">Go back
                             </button>
-                            <button class="btn btn-dark " onclick="launchFullScreen(document.documentElement);"> full
-                                screen
+                            <button  id="btn" class="btn btn-dark " onclick="launchFullScreen(document.documentElement);"> full screen
                             </button>
+                            <input id="color" type="text">
+                            <button  id="btn" class="btn btn-dark " onclick="change();"> C
+                            </button>
+                            
+                            
                         </div>
                         <div id="info-maquina-operario"></div>
-                        <form action="">
+                        <form id="form-fecha" action="">
                             <input id="fecha" class="form-control" type="date" placeholder="Seleccione Fecha">
                         </form>
                         <div id="periodo">
-                            <h4>Periodo: 9:00:00 - </h4>
+                            <h4 id="text">Range: 9:00:00</h4>
+                            <h4 id="text"> - </h4>
                             <div id="horaActual"></div>
                         </div>
                         
-
                     </div>
                     <div id="left-top-right">
                         <div id="total"></div>

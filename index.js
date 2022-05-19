@@ -46,26 +46,25 @@ io.on("connection", (socket) => {
   console.log("Socket conection Exitosa", socket.id);
   queryBD();
   io.sockets.emit("start", uCerradas);
-
 });
 
 //BD
 var mysql = require("mysql");
-var tabla = "tb_Registro_Proc_10002824";// "tb_Registro_Proc_10002824";"cerradoras" ;
+var tabla =  "cerradoras" ;// "tb_Registro_Proc_10002824";"cerradoras" ;
 
 var conexion = mysql.createConnection({
   //tb_Registro_Proc_10002824
- /*
+ 
   host: "localhost",
   database: "rosen",
   user: "root",
   password: "",
-  */
+ /*
   host: "172.16.44.150",
   database: "db_MODBUS",
   user: "ctrujillo",
-  password: "d2021ct", 
- 
+  password: "d2021ct",
+  */ 
 });
 
 conexion.connect(function (error) {
@@ -140,7 +139,7 @@ function Contar(hi, hf, fecha) {
 let nCerradosHoy = 0;
 let nCerradosHastaHoy = 0;
 
-function tasaEstandar(hi, hf,fechaStart, fecha) {
+function tasaEstandar(hi, hf, fechaStart, fecha) {
   //eficiencia en la productividad
   if (nuevoRegistro) {
     //contara todas las unidades cerradas hasta la fecha dentro del periodo  [hi-hf]
@@ -150,7 +149,7 @@ function tasaEstandar(hi, hf,fechaStart, fecha) {
         " where Fecha >= '" +
         fechaStart +
         "' and Fecha <= '" +
-        fecha  +
+        fecha +
         "' and v1= 0 and Hora>= '" +
         hi +
         "' and Hora < '" +
@@ -167,7 +166,9 @@ function tasaEstandar(hi, hf,fechaStart, fecha) {
         let tasaEstandar = Math.round(nCerradosHastaHoy / dias);
 
         console.log(
-          "n° cerrados desde "+fechaStart+" hasta " +
+          "n° cerrados desde " +
+            fechaStart +
+            " hasta " +
             fecha +
             " entre [" +
             hi +
@@ -179,7 +180,7 @@ function tasaEstandar(hi, hf,fechaStart, fecha) {
             tasaEstandar
         );
 
-        io.sockets.emit("tasaEstandar", tasaEstandar+11);    //ese  +11 es un numero rndom para amortiguar el error de los dias en los que el promedio fue cero o muy bajo
+        io.sockets.emit("tasaEstandar", tasaEstandar + 11); //ese  +11 es un numero rndom para amortiguar el error de los dias en los que el promedio fue cero o muy bajo
       }
     );
   }
@@ -239,7 +240,7 @@ function queryBD() {
   EscucharBD();
   select(Fecha);
   unDiarias(Fecha);
-  tasaEstandar("09:00:00", Hora, '2022-05-07',Fecha);
+  tasaEstandar("09:00:00", Hora, "2022-05-07", Fecha);
 }
 
 function repetirCadaXSegundos() {
@@ -247,3 +248,4 @@ function repetirCadaXSegundos() {
 }
 
 repetirCadaXSegundos();
+//select('2022-05-11');

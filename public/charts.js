@@ -10,13 +10,22 @@ let Fecha =
 
 let Hora = date.getHours() + ":" + date.getMinutes() + ":" + date.getSeconds();
 let eficiencia;
+let green="#00ff99";
 
+function change(){
+  let color = document.getElementById("color").value;
+  green=color;
+}
+
+
+Chart.defaults.color= "rgb(255, 255, 255)";
 
 let total = document.getElementById("total");
 let infoMaquinaOperario = document.getElementById("info-maquina-operario");
 let info2 = document.getElementById("info2");
 let info3 = document.getElementById("info3");
 let periodo =  document.getElementById("periodo");
+
 
 let cerradora = "10002824";
 let operario = "G. Ormeño";
@@ -46,27 +55,27 @@ var newData = [];
 //########################################################################################################################################
 
 // setup
-let colorBarras = "rgb(0, 168, 132)";
+//let green = "rgb(0, 255, 153)";
 let colorBorde = "rgb(223, 243, 237)";
 let axes = "#DFF3ED";
 
 let data = {
   labels: [
-    "[9-10]",
-    "[10-11]",
-    "[11-12]",
-    "[12-13]",
-    "[13-14]",
-    "[14-15]",
-    "[15-16]",
-    "[16-17]",
-    "[17-18]",
+    "9h",
+    "10h",
+    "11h",
+    "12h",
+    "13h",
+    "14h",
+    "15h",
+    "16h",
+    "17h",
   ],
   datasets: [
     {
       label: "Unidades Cerradas",
       data: oldData,
-      backgroundColor: [colorBarras],
+      backgroundColor: [green],
       borderColor: [colorBorde],
       borderWidth: 3,
     },
@@ -74,21 +83,21 @@ let data = {
 };
 let data2 = {
   labels: [
-    "[9-10]",
-    "[10-11]",
-    "[11-12]",
-    "[12-13]",
-    "[13-14]",
-    "[14-15]",
-    "[15-16]",
-    "[16-17]",
-    "[17-18]",
+    "9h",
+    "10h",
+    "11h",
+    "12h",
+    "13h",
+    "14h",
+    "15h",
+    "16h",
+    "17h",
   ],
   datasets: [
     {
       label: "Unidades Cerradas",
       data: newData,
-      backgroundColor: [colorBarras],
+      backgroundColor: [green],
       borderColor: [colorBorde],
       borderWidth: 3,
     },
@@ -97,21 +106,21 @@ let data2 = {
 
 let data3 = {
   labels: [
-    "[9-10]",
-    "[10-11]",
-    "[11-12]",
-    "[12-13]",
-    "[13-14]",
-    "[14-15]",
-    "[15-16]",
-    "[16-17]",
-    "[17-18]",
+    "9h",
+    "10h",
+    "11h",
+    "12h",
+    "13h",
+    "14h",
+    "15h",
+    "16h",
+    "17h",
   ],
   datasets: [
     {
       label: "Unidades Cerradas",
       data: oldData,
-      backgroundColor: [colorBarras],
+      backgroundColor: [green],
       borderColor: [colorBorde],
 
       borderWidth: 3,
@@ -145,6 +154,21 @@ let config = {
         beginAtZero: true,
       },
     },
+    showTooltips: false,
+    onAnimationComplete: function() {
+
+      var ctx = this.chart.ctx;
+      ctx.font = this.scale.font;
+      ctx.fillStyle = this.scale.textColor
+      ctx.textAlign = "center";
+      ctx.textBaseline = "bottom";
+  
+      this.datasets.forEach(function(datasets) {
+        datasets.bars.forEach(function(bar) {
+          ctx.fillText(bar.value, bar.x, bar.y - 5);
+        });
+      })
+    }
   },
 };
 
@@ -153,7 +177,10 @@ let config2 = {
   data: data2,
   options: {
     legend: {
-      fontColor: "white",
+      labels: {
+        // This more specific font property overrides the global property
+        fontColor: "white",
+      },
     },
 
     scales: {
@@ -170,6 +197,21 @@ let config2 = {
         beginAtZero: true,
       },
     },
+    showTooltips: false,
+    onAnimationComplete: function() {
+
+      var ctx = this.chart.ctx;
+      ctx.font = this.scale.font;
+      ctx.fillStyle = this.scale.textColor
+      ctx.textAlign = "center";
+      ctx.textBaseline = "bottom";
+  
+      this.datasets.forEach(function(datasets) {
+        datasets.bars.forEach(function(bar) {
+          ctx.fillText(bar.value, bar.x, bar.y - 5);
+        });
+      })
+    }
   },
 };
 
@@ -178,7 +220,10 @@ let config3 = {
   data: data3,
   options: {
     legend: {
-      fontColor: "white",
+      labels: {
+        // This more specific font property overrides the global property
+        fontColor: "white",
+      },
     },
 
     scales: {
@@ -195,6 +240,21 @@ let config3 = {
         beginAtZero: true,
       },
     },
+    showTooltips: false,
+    onAnimationComplete: function() {
+
+      var ctx = this.chart.ctx;
+      ctx.font = this.scale.font;
+      ctx.fillStyle = this.scale.textColor
+      ctx.textAlign = "center";
+      ctx.textBaseline = "bottom";
+  
+      this.datasets.forEach(function(datasets) {
+        datasets.bars.forEach(function(bar) {
+          ctx.fillText(bar.value, bar.x, bar.y - 5);
+        });
+      })
+    }
   },
 };
 
@@ -246,16 +306,16 @@ socket.on("start", function (data) {
     data[8];
 
   total.innerHTML = `<h1 id="tot" > ${sumaTotal}</h1> uds. `;
-  infoMaquinaOperario.innerHTML = `<h4> C. Veque   n° ${cerradora}</h4>
-                                  <h4> Operario: ${operario}</h4>  
+  infoMaquinaOperario.innerHTML = `<h4 id="text"> C. Veque   n° ${cerradora}</h4>
+                                  <h4 id="text"> Operario: ${operario}</h4>  
                               `;
 
   socket.on("tasaEstandar", function (datos) {
 
     eficiencia=Math.round((sumaTotal / datos) * 100);
     info2.innerHTML = ` 
-    <h4 id="info">Tasa Estandar: ${datos}</h4> 
-    <h4 id="info">Eficiencia: ${eficiencia} %</h4> `;
+    <h4 id="info-operario">Tasa Estandar: ${datos}</h4> 
+    <h4 id="info-operario">Eficiencia: ${eficiencia} %</h4> `;
     console.log('sumaTotal:'+sumaTotal)
     console.log('datos:'+datos)
   });
@@ -298,15 +358,14 @@ socket.on("Cerradas", function (data) {
   socket.on("tasaEstandar", function (datos) {
     eficiencia=Math.round((sumaTotal / datos) * 100);
     info2.innerHTML = `
-    <h4 id="info">Tasa Estandar: ${datos}</h4> 
-    <h4 id="info">Eficiencia: ${Math.round((sumaTotal / datos) * 100)} %</h4> `;
+    <h4 id="info-operario">Tasa Estandar: ${datos}</h4> 
+    <h4 id="info-operario">Eficiencia: ${Math.round((sumaTotal / datos) * 100)} %</h4> `;
 
-    infoMaquinaOperario.innerHTML = `<h4> C. Veque   n° ${cerradora}</h4>
-    <h4> Operario: ${operario}</h4> `;
+    infoMaquinaOperario.innerHTML = `<h4 id="text"> C. Veque   n° ${cerradora}</h4>
+    <h4 id="text"> Operario: ${operario}</h4> `;
   });
 });
-//>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>> Iformacion de la Produccion<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
-//########################################################################################################################################
+
 
 //>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>> Chart pie % productivo % detenido <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
 //########################################################################################################################################
@@ -321,7 +380,7 @@ var datap = {
       label: "# of Votes",
       data: dataPie,
       borderWidth: 1,
-      backgroundColor: ["#DFF3ED", "#00a884"],
+      backgroundColor: ["#DFF3ED", green],
       fontColor: "white",
     },
   ],
@@ -334,7 +393,7 @@ var datap2 = {
       label: "# of Votes",
       data: dataPie,
       borderWidth: 1,
-      backgroundColor: ["#DFF3ED", "#00a884"],
+      backgroundColor: ["#DFF3ED", green],
       fontColor: "white",
     },
   ],
@@ -348,7 +407,7 @@ function handleLeave(evt, item, legend) {
   );
   legend.chart.update();
 }
-// Append '4d' to the colors (alpha channel), except for the hovered index
+// Append '4d' to the colors (alpha channel), except for the hovewhite index
 function handleHover(evt, item, legend) {
   legend.chart.data.datasets[0].backgroundColor.forEach(
     (color, index, colors) => {
@@ -366,7 +425,7 @@ const configp = {
     plugins: {
       labels: {
         render: "percentage",
-        fontColor: "#00a884",
+        fontColor: green,
         fontStyle: "bolder",
       },
       animation: {
@@ -388,7 +447,7 @@ const configp2 = {
     plugins: {
       labels: {
         render: "percentage",
-        fontColor: "#00a884",
+        fontColor: green,
         fontStyle: "bolder",
       },
       animation: {
@@ -508,7 +567,7 @@ function realTime() {
   } 
   */     
   horaActual.innerHTML = ` 
-  <h4> ${Hora} </h4> `;
+  <h4 id="text"> ${Hora} </h4> `;
   canvas();
 }
 
@@ -523,7 +582,7 @@ const dataDonut = {
     {
       label: "My First Dataset",
       data: [83,100-83],
-      backgroundColor: ["rgb(0, 168, 132)", "rgb(223, 243, 237)"],
+      backgroundColor: [green, "rgb(223, 243, 237)"],
       hoverOffset: 4,
     },
   ],
@@ -556,14 +615,15 @@ const configDonut = {
 function canvas() {
   var canvas = document.getElementById("timeline");
   var ctx = canvas.getContext("2d");
-  ctx.clearRect(0, 0, 32400, 3000);
+  ctx.clearRect(0, 0, 32400, 3100);
 
-  function green(x, w) {
-    ctx.fillStyle = "rgb(223, 243, 237)";
+  function greenx(x, w) {
+    ctx.fillStyle = green;
+    
     ctx.fillRect(x, 700, w, 1500);
   }
-  function red(x, w) {
-    ctx.fillStyle = "rgb(0, 168, 132)";
+  function white(x, w) {
+    ctx.fillStyle = "rgb(223, 243, 237)";
     ctx.fillRect(x, 600, w, 1700);
   }
 
@@ -585,33 +645,33 @@ function canvas() {
     for (let i = 0; i < tiempos.length; i++) {
       if (v1es1) {
         if (i % 2 != 0) {
-          red(x, tiempos[i]);
+          greenx(x, tiempos[i]);
           x += tiempos[i];
         } else {
-          green(x, tiempos[i]);
+          white(x, tiempos[i]);
           x += tiempos[i];
         }
 
       } else {
         if (i % 2 != 0) {
-          green(x, tiempos[i]);
+          white(x, tiempos[i]);
           x += tiempos[i];
         } else {
-          red(x, tiempos[i]);
+          greenx(x, tiempos[i]);
           x += tiempos[i];
         }
       }
       //painting labels of x axes
-      ctx.font = "250px Comic Sans MS";
+      ctx.font = "350px Arial ";
       ctx.fillStyle = "white";
       ctx.textAlign = "center";
 
       if (i == 0) {
-        ctx.fillText(i + 9 + "hrs.", i * 3600 + 300, 2700);
+        ctx.fillText(i + 9 + "h", i * 3600 + 300, 2800);
       } else if (i == 9) {
-        ctx.fillText(i + 9 + "hrs.", i * 3600 - 100, 2700);
+        ctx.fillText(i + 9 + "h", i * 3600 - 100, 2800);
       } else {
-        ctx.fillText(i + 9 + "hrs.", i * 3600, 2700);
+        ctx.fillText(i + 9 + "h", i * 3600, 2800);
       }
     }
 
